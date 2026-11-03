@@ -15,7 +15,7 @@ export function Reveal({
   as: Tag = "div",
   className,
   id,
-  stagger = 0.08,
+  stagger = 0.1,
 }: {
   children: ReactNode;
   as?: ElementType;
@@ -33,29 +33,46 @@ export function Reveal({
       if (words.length) {
         gsap.from(words, {
           yPercent: 110,
+          rotateX: -50,
+          transformOrigin: "50% 100%",
           duration: 1.2,
           ease: "expo.out",
           stagger: 0.05,
           scrollTrigger: { trigger: root, start: "top 78%" },
         });
       }
-      const ups = root.querySelectorAll<HTMLElement>("[data-reveal='up'], [data-reveal='']");
-      if (ups.length) {
-        gsap.from(ups, {
-          y: 60,
-          opacity: 0,
-          duration: 1.1,
-          ease: "expo.out",
-          stagger,
-          scrollTrigger: { trigger: root, start: "top 75%" },
-        });
-      }
+      // entradas ligadas ao scroll (scrub): sobem, endireitam-se em 3D e ganham opacidade;
+      // ao voltar para cima fazem o inverso. Elementos seguidos entram ligeiramente desfasados.
+      root.querySelectorAll<HTMLElement>("[data-reveal='up'], [data-reveal='']").forEach((el, i) => {
+        const lag = (i % 3) * 5;
+        gsap.fromTo(
+          el,
+          { y: 110, rotateX: 18, scale: 0.94, opacity: 0, transformPerspective: 1100, transformOrigin: "50% 0%" },
+          {
+            y: 0,
+            rotateX: 0,
+            scale: 1,
+            opacity: 1,
+            ease: "none",
+            scrollTrigger: { trigger: el, start: `top ${100 + lag}%`, end: `top ${66 - lag}%`, scrub: 0.6 },
+          },
+        );
+      });
+      // parallax: elementos com data-speed deslocam-se a velocidades diferentes
+      root.querySelectorAll<HTMLElement>("[data-speed]").forEach((el) => {
+        const speed = Number(el.dataset.speed) || 0;
+        gsap.fromTo(
+          el,
+          { yPercent: speed * 12 },
+          { yPercent: -speed * 12, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } },
+        );
+      });
       const fades = root.querySelectorAll<HTMLElement>("[data-reveal='fade']");
       if (fades.length) {
         gsap.from(fades, { opacity: 0, duration: 1.4, ease: "power2.out", stagger, scrollTrigger: { trigger: root, start: "top 75%" } });
       }
       root.querySelectorAll<HTMLElement>("[data-reveal='line']").forEach((el) => {
-        gsap.from(el, { scaleX: 0, transformOrigin: "left center", duration: 1.6, ease: "expo.inOut", scrollTrigger: { trigger: el, start: "top 90%" } });
+        gsap.fromTo(el, { scaleX: 0 }, { scaleX: 1, transformOrigin: "left center", ease: "none", scrollTrigger: { trigger: el, start: "top 95%", end: "top 55%", scrub: true } });
       });
     }, root);
     return () => ctx.revert();

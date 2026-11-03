@@ -5,6 +5,7 @@ import "./globals.css";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { CursorGlow } from "@/components/layout/CursorGlow";
 import { SITE } from "@/config/site";
 
 const unbounded = Unbounded({
@@ -59,6 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <Footer />
           </Suspense>
         </SmoothScroll>
+        <CursorGlow />
         <div className="grain" aria-hidden="true" />
       </body>
     </html>

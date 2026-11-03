@@ -346,7 +346,8 @@ html.lenis body {
   background-repeat: no-repeat;
   -webkit-background-clip: text;
   background-clip: text;
-  color: transparent;
+  /* quase transparente (não 100%): o Chrome não conta texto transparente para o LCP */
+  color: rgba(245, 245, 245, 0.02);
   animation: chrome-sheen 6.5s var(--ease-premium) infinite;
   animation-delay: calc(var(--i, 0) * 55ms + 1.4s);
 }
@@ -371,6 +372,10 @@ html.lenis body {
     rotate(calc(var(--dr) * var(--d, 0))) scale(calc(1 + var(--d, 0) * 0.5));
   filter: blur(calc(var(--d, 0) * 22px));
   opacity: calc(1 - var(--d, 0) * 1.25);
+}
+/* camadas próprias só depois do carregamento: antes disso as letras são pintadas logo
+   na página (por baixo do ecrã de carregamento), o que mantém o LCP rápido */
+[data-ready="true"] .disperse {
   will-change: transform, filter, opacity;
 }
 .rise-mask {
@@ -379,14 +384,17 @@ html.lenis body {
   padding: 0.04em 0.01em;
   margin: -0.04em -0.01em;
 }
+/* o título já está completo por baixo do ecrã de carregamento (LCP rápido); a revelação é feita
+   pela saída do loader. Ao ficar pronto, as letras "assentam" com um ligeiro zoom-out. */
 .rise {
   display: inline-block;
-  transform: translate3d(0, 115%, 0);
+  transform: scale(1.06);
   transition: transform 1.3s var(--ease-premium);
   transition-delay: calc(var(--i, 0) * 45ms + 0.15s);
 }
 [data-ready="true"] .rise {
-  transform: none;
+  /* manter um transform (e não "none"): assim o Chrome não volta a contar a letra como novo LCP */
+  transform: scale(1);
 }
 /* só movimento (sem opacidade): o texto já está pintado por baixo do ecrã de carregamento,
    o que mantém o LCP rápido */
@@ -453,4 +461,42 @@ html.lenis body {
   opacity: calc(1 - var(--d, 0) * 2);
   filter: blur(calc(var(--d, 0) * 12px));
   transform: translateY(calc(var(--d, 0) * -4vh));
+}
+
+/* Reflexo do título a seguir o rato: --mx (posição do rato no título, 0–1),
+   --lx/--lw (centro e largura de cada letra, calculados em JS). */
+[data-follow="true"] .chrome-letter {
+  animation: none;
+  background-position:
+    calc((1.6 - (0.5 + (var(--mx, 0.5) - var(--lx, 0.5)) / var(--lw, 0.1))) / 0.022 * 1%) 0,
+    0 0;
+  transition: background-position 0.25s linear;
+}
+
+/* Brilho que segue o cursor */
+.cursor-glow {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 95;
+  width: 46vmax;
+  height: 46vmax;
+  margin: -23vmax 0 0 -23vmax;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(225, 232, 245, 0.11) 0%, rgba(217, 220, 224, 0.045) 30%, transparent 62%);
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 0.6s;
+  will-change: transform;
+}
+.cursor-glow[data-on="true"] {
+  opacity: 1;
+}
+.cursor-glow::after {
+  content: "";
+  position: absolute;
+  inset: 44%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.22), transparent 70%);
 }

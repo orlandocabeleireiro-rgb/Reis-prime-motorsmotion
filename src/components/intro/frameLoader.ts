@@ -1,4 +1,4 @@
-import { INTRO, framePath, type IntroVariant } from "@/config/intro";
+import { INTRO, framePath, type IntroFolder } from "@/config/intro";
 
 export interface FrameStore {
   images: (HTMLImageElement | null)[];
@@ -27,7 +27,8 @@ function loadImage(src: string, priority: boolean): Promise<HTMLImageElement> {
  *  2. Restantes em segundo plano, com concorrência limitada.
  */
 export function loadFrames(
-  variant: IntroVariant,
+  folder: IntroFolder,
+  total: number,
   {
     onPriorityProgress,
     onPriorityDone,
@@ -41,7 +42,6 @@ export function loadFrames(
     only?: number[];
   } = {},
 ): FrameStore {
-  const total = INTRO.frameCount;
   const images: (HTMLImageElement | null)[] = new Array(total).fill(null);
   let cancelled = false;
 
@@ -61,7 +61,7 @@ export function loadFrames(
       while (!cancelled && cursor < queue.length) {
         const index = queue[cursor++];
         try {
-          images[index] = await loadImage(framePath(variant, index), isPriority);
+          images[index] = await loadImage(framePath(folder, index), isPriority);
         } catch {
           /* frame em falta: o nearest() usa o vizinho mais próximo */
         }

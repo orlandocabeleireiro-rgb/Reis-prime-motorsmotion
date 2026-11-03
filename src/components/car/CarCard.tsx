@@ -8,6 +8,7 @@ import { BRAND_NAME } from "@/data/brands";
 import { BADGE_LABEL, FUEL_LABEL, GEARBOX_LABEL } from "@/lib/labels";
 import { formatKm, formatPrice } from "@/lib/format";
 import { FavoriteButton } from "./FavoriteButton";
+import { Tilt } from "@/components/ui/Tilt";
 
 export function CarCard({ car, priority = false }: { car: Car; priority?: boolean }) {
   const [index, setIndex] = useState(0);
@@ -24,6 +25,7 @@ export function CarCard({ car, priority = false }: { car: Car; priority?: boolea
   };
 
   return (
+    <Tilt className="h-full">
     <article className="group/card relative flex h-full flex-col overflow-hidden rounded-[1.25rem] border border-white/[0.07] bg-gradient-to-b from-ink-2 to-ink transition-[transform,border-color,box-shadow] duration-700 ease-(--ease-premium) hover:-translate-y-1.5 hover:border-white/15 hover:shadow-[0_40px_80px_-30px_rgba(0,0,0,0.9),0_0_0_1px_rgba(217,220,224,0.06)]">
       <div
         ref={mediaRef}
@@ -128,6 +130,7 @@ export function CarCard({ car, priority = false }: { car: Car; priority?: boolea
         </div>
       </div>
     </article>
+    </Tilt>
   );
 }
 

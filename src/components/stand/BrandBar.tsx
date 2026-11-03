@@ -21,7 +21,28 @@ export function BrandBar({
   onSelect: (b: BrandId | null) => void;
 }) {
   const scroller = useRef<HTMLDivElement>(null);
-  const drag = useRef({ active: false, moved: false, x: 0, left: 0 });
+  const drag = useRef({ active: false, moved: false, x: 0, left: 0, lastX: 0, lastT: 0, v: 0 });
+  const inertia = useRef(0);
+
+  // arrastar com o rato e soltar com inércia (desacelera suavemente)
+  const startInertia = (v: number) => {
+    cancelAnimationFrame(inertia.current);
+    const el = scroller.current;
+    if (!el || Math.abs(v) < 0.05) return;
+    let vel = v; // px por ms
+    let last = performance.now();
+    const step = (now: number) => {
+      const dt = Math.min(32, now - last);
+      last = now;
+      el.scrollLeft -= vel * dt;
+      vel *= Math.pow(0.94, dt / 16.67);
+      const atEdge = el.scrollLeft <= 0 || el.scrollLeft + el.clientWidth >= el.scrollWidth - 1;
+      if (Math.abs(vel) > 0.02 && !atEdge) inertia.current = requestAnimationFrame(step);
+      else el.style.scrollSnapType = "";
+    };
+    el.style.scrollSnapType = "none";
+    inertia.current = requestAnimationFrame(step);
+  };
   const [edges, setEdges] = useState({ start: false, end: true });
 
   const updateEdges = () => {
@@ -55,7 +76,10 @@ export function BrandBar({
         onScroll={updateEdges}
         onPointerDown={(e) => {
           if (e.pointerType !== "mouse") return;
-          drag.current = { active: true, moved: false, x: e.clientX, left: scroller.current!.scrollLeft };
+          cancelAnimationFrame(inertia.current);
+          const now = performance.now();
+          drag.current = { active: true, moved: false, x: e.clientX, left: scroller.current!.scrollLeft, lastX: e.clientX, lastT: now, v: 0 };
+          scroller.current!.style.scrollSnapType = "none";
         }}
         onPointerMove={(e) => {
           const d = drag.current;
@@ -63,9 +87,25 @@ export function BrandBar({
           const dx = e.clientX - d.x;
           if (Math.abs(dx) > 4) d.moved = true;
           scroller.current!.scrollLeft = d.left - dx;
+          const now = performance.now();
+          const dt = Math.max(1, now - d.lastT);
+          d.v = d.v * 0.6 + ((e.clientX - d.lastX) / dt) * 0.4;
+          d.lastX = e.clientX;
+          d.lastT = now;
         }}
-        onPointerUp={() => (drag.current.active = false)}
-        onPointerLeave={() => (drag.current.active = false)}
+        onPointerUp={() => {
+          const d = drag.current;
+          if (!d.active) return;
+          d.active = false;
+          if (d.moved) startInertia(d.v);
+          else scroller.current!.style.scrollSnapType = "";
+        }}
+        onPointerLeave={() => {
+          const d = drag.current;
+          if (!d.active) return;
+          d.active = false;
+          startInertia(d.v);
+        }}
         onClickCapture={(e) => {
           if (drag.current.moved) {
             e.preventDefault();

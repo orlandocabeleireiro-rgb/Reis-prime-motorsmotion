@@ -17,6 +17,7 @@ import {
 import { BODY_LABEL, FUEL_LABEL, GEARBOX_LABEL } from "@/lib/labels";
 import { formatNumber, pluralize } from "@/lib/format";
 import { CarCard } from "@/components/car/CarCard";
+import { ScrollIn } from "@/components/ui/ScrollIn";
 import { useLenis } from "@/components/layout/SmoothScroll";
 import { Icon } from "@/components/ui/Icon";
 import { BrandBar } from "./BrandBar";
@@ -175,22 +176,22 @@ export function StandExplorer({ cars }: { cars: Car[] }) {
         {/* Grelha */}
         <LayoutGroup>
           <motion.ul layout className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 xl:grid-cols-3">
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence mode="popLayout" initial={false}>
               {results.map((car, i) => (
                 <motion.li
                   key={car.id}
                   layout
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, scale: 0.92, filter: "blur(8px)" }}
+                  animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                   exit={{ opacity: 0, scale: 0.94, filter: "blur(6px)", transition: { duration: 0.3 } }}
-                  viewport={{ once: true, margin: "0px 0px -10% 0px" }}
                   transition={{
                     layout: { type: "spring", stiffness: 260, damping: 32 },
-                    opacity: { duration: 0.8, delay: (i % 3) * 0.08 },
-                    y: { duration: 0.9, delay: (i % 3) * 0.08, ease: [0.22, 1, 0.36, 1] },
+                    default: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
                   }}
                 >
-                  <CarCard car={car} priority={i < 3} />
+                  <ScrollIn stagger={(i % 3) * 0.14} className="h-full">
+                    <CarCard car={car} priority={i < 3} />
+                  </ScrollIn>
                 </motion.li>
               ))}
             </AnimatePresence>

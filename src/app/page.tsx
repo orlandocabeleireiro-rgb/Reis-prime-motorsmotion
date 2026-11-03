@@ -7,6 +7,7 @@ import { WhySection } from "@/components/sections/WhySection";
 import { FinanceSection } from "@/components/sections/FinanceSection";
 import { SellSection } from "@/components/sections/SellSection";
 import { getCars } from "@/lib/cars-repository";
+import { getIntroManifest } from "@/lib/intro-manifest";
 import { LazyMount } from "@/components/ui/LazyMount";
 
 export default async function Home() {
@@ -15,7 +16,7 @@ export default async function Home() {
 
   return (
     <>
-      <IntroSequence>
+      <IntroSequence manifest={getIntroManifest()}>
         <StandHero total={cars.length} brands={brandCount} />
       </IntroSequence>
 

@@ -8,7 +8,6 @@
     "start": "next start",
     "lint": "eslint",
     "intro:frames": "bash scripts/convert-intro.sh",
-    "intro:placeholder": "node scripts/generate-placeholder-intro.mjs .placeholder-intro && bash scripts/convert-intro.sh .placeholder-intro/intro-desktop.mp4 .placeholder-intro/intro-mobile.mp4",
     "cars:placeholders": "node scripts/generate-car-placeholders.mjs",
     "icons": "node scripts/build-brand-icons.mjs",
     "typecheck": "next typegen && tsc --noEmit"
@@ -20,6 +19,7 @@
     "next": "16.4.4",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "server-only": "^0.0.1",
     "simple-icons": "^16.36.0"
   },
   "devDependencies": {
