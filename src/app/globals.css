@@ -1,0 +1,456 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0a0a0a;
+  --color-ink-2: #111113;
+  --color-ink-3: #18181b;
+  --color-paper: #f5f5f5;
+  --color-silver: #b4b7bb;
+  --color-silver-dark: #8a8d91;
+  --color-silver-light: #d9dce0;
+  --color-muted: #9a9da2;
+
+  --font-display: var(--font-unbounded), "Arial Black", sans-serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+  --breakpoint-xs: 26rem;
+}
+
+:root {
+  --header-h: 4rem;
+  --metal: linear-gradient(110deg, #8a8d91 0%, #d9dce0 22%, #ffffff 30%, #a9acb1 42%, #d9dce0 62%, #8a8d91 100%);
+  color-scheme: dark;
+}
+
+html {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+::selection {
+  background: #d9dce0;
+  color: #0a0a0a;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
+:focus-visible {
+  outline: 2px solid #d9dce0;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@layer components {
+  /* Rótulos em maiúsculas espaçadas */
+  .label {
+    font-size: 0.6875rem;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--color-silver);
+  }
+
+  /* Texto com reflexo metálico (animado) */
+  .text-metal {
+    background-image: var(--metal);
+    background-size: 250% 100%;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: metal-sheen 6s var(--ease-premium) infinite;
+  }
+  .text-metal-static {
+    background-image: linear-gradient(180deg, #ffffff 0%, #d9dce0 45%, #8a8d91 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Linha fina prateada */
+  .hairline {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(217, 220, 224, 0.45), transparent);
+  }
+  .hairline-v {
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(217, 220, 224, 0.35), transparent);
+  }
+
+  /* Borda prateada subtil */
+  .silver-border {
+    border: 1px solid rgba(217, 220, 224, 0.12);
+  }
+
+  /* Botões */
+  .btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    height: 3rem;
+    padding: 0 1.5rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      transform 0.5s var(--ease-premium),
+      background-color 0.4s,
+      color 0.4s,
+      border-color 0.4s;
+  }
+  .btn::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.55) 48%, transparent 66%);
+    transform: translateX(-120%);
+    transition: transform 0.9s var(--ease-premium);
+  }
+  .btn:hover::after {
+    transform: translateX(120%);
+  }
+  .btn-primary {
+    background: linear-gradient(180deg, #f5f5f5, #c9ccd0);
+    color: #0a0a0a;
+  }
+  .btn-ghost {
+    border: 1px solid rgba(217, 220, 224, 0.28);
+    color: #f5f5f5;
+  }
+  .btn-ghost:hover {
+    border-color: rgba(217, 220, 224, 0.7);
+  }
+
+  /* Campos de formulário */
+  .field {
+    width: 100%;
+    height: 3rem;
+    padding: 0 1rem;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(217, 220, 224, 0.14);
+    color: #f5f5f5;
+    font-size: 0.9375rem;
+    transition:
+      border-color 0.3s,
+      background-color 0.3s;
+  }
+  .field::placeholder {
+    color: #6f7276;
+  }
+  .field:focus {
+    outline: none;
+    border-color: rgba(217, 220, 224, 0.6);
+    background: rgba(255, 255, 255, 0.05);
+  }
+  textarea.field {
+    height: auto;
+    padding: 0.85rem 1rem;
+    resize: vertical;
+  }
+  select.field {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23b4b7bb' stroke-width='1.5'%3E%3Cpath d='m2 4 4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    padding-right: 2.5rem;
+  }
+  select.field option {
+    background: #111113;
+  }
+
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes metal-sheen {
+  0%,
+  15% {
+    background-position: 100% 0;
+  }
+  60%,
+  100% {
+    background-position: 0% 0;
+  }
+}
+
+/* Grão de filme */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 0.9s steps(6) infinite;
+  will-change: transform;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-6%, 4%); }
+  40% { transform: translate(5%, -7%); }
+  60% { transform: translate(-3%, 8%); }
+  80% { transform: translate(7%, 2%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Skeleton */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: #141416;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 20%, rgba(217, 220, 224, 0.07) 50%, transparent 80%);
+  transform: translateX(-100%);
+  animation: shimmer 1.6s infinite;
+}
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Slider duplo (dois input range sobrepostos) */
+.range-dual {
+  position: relative;
+  height: 1.5rem;
+}
+.range-dual input[type="range"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  margin: 0;
+  background: transparent;
+  pointer-events: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.range-dual input[type="range"]::-webkit-slider-runnable-track {
+  height: 1.5rem;
+  background: transparent;
+}
+.range-dual input[type="range"]::-moz-range-track {
+  height: 1.5rem;
+  background: transparent;
+}
+.range-dual input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  pointer-events: auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 3px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #d9dce0 45%, #8a8d91);
+  border: 0;
+  box-shadow:
+    0 0 0 4px rgba(10, 10, 10, 0.9),
+    0 0 14px rgba(217, 220, 224, 0.35);
+  cursor: grab;
+  transition: transform 0.2s;
+}
+.range-dual input[type="range"]::-moz-range-thumb {
+  pointer-events: auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #d9dce0 45%, #8a8d91);
+  border: 0;
+  box-shadow:
+    0 0 0 4px rgba(10, 10, 10, 0.9),
+    0 0 14px rgba(217, 220, 224, 0.35);
+  cursor: grab;
+}
+.range-dual input[type="range"]:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+  cursor: grabbing;
+}
+.range-dual input[type="range"]:focus-visible {
+  outline: none;
+}
+.range-dual input[type="range"]:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 4px rgba(10, 10, 10, 0.9),
+    0 0 0 6px #d9dce0;
+}
+.range-dual input[type="range"]:focus-visible::-moz-range-thumb {
+  box-shadow:
+    0 0 0 4px rgba(10, 10, 10, 0.9),
+    0 0 0 6px #d9dce0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .grain {
+    animation: none;
+  }
+}
+
+/* ---------- Intro ---------- */
+
+/* Letras cromadas com reflexo que atravessa o título letra a letra */
+.chrome-letter {
+  background-image:
+    linear-gradient(105deg, transparent 38%, rgba(255, 255, 255, 0.95) 50%, transparent 62%),
+    linear-gradient(180deg, #ffffff 0%, #e6e8eb 38%, #9a9da2 50%, #6e7176 53%, #c3c6ca 72%, #f5f5f5 100%);
+  background-size:
+    320% 100%,
+    100% 100%;
+  background-position:
+    160% 0,
+    0 0;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: chrome-sheen 6.5s var(--ease-premium) infinite;
+  animation-delay: calc(var(--i, 0) * 55ms + 1.4s);
+}
+@keyframes chrome-sheen {
+  0% {
+    background-position:
+      160% 0,
+      0 0;
+  }
+  45%,
+  100% {
+    background-position:
+      -60% 0,
+      0 0;
+  }
+}
+
+/* Dispersão das letras controlada por --d (0 → 1) no contentor */
+.disperse {
+  display: inline-block;
+  transform: translate3d(calc(var(--dx) * var(--d, 0)), calc(var(--dy) * var(--d, 0)), 0)
+    rotate(calc(var(--dr) * var(--d, 0))) scale(calc(1 + var(--d, 0) * 0.5));
+  filter: blur(calc(var(--d, 0) * 22px));
+  opacity: calc(1 - var(--d, 0) * 1.25);
+  will-change: transform, filter, opacity;
+}
+.rise-mask {
+  display: inline-block;
+  overflow: hidden;
+  padding: 0.04em 0.01em;
+  margin: -0.04em -0.01em;
+}
+.rise {
+  display: inline-block;
+  transform: translate3d(0, 115%, 0);
+  transition: transform 1.3s var(--ease-premium);
+  transition-delay: calc(var(--i, 0) * 45ms + 0.15s);
+}
+[data-ready="true"] .rise {
+  transform: none;
+}
+/* só movimento (sem opacidade): o texto já está pintado por baixo do ecrã de carregamento,
+   o que mantém o LCP rápido */
+.fade-up {
+  transform: translateY(18px);
+  transition: transform 1.2s var(--ease-premium);
+}
+[data-ready="true"] .fade-up {
+  transform: none;
+}
+
+/* Anel de luz na borda das máscaras circulares */
+.reveal-ring {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+    circle,
+    transparent 0 60%,
+    rgba(255, 255, 255, 0.35) 66%,
+    rgba(255, 255, 255, 1) 70.5%,
+    rgba(230, 236, 255, 0.55) 72%,
+    transparent 80%
+  );
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+
+@keyframes scroll-dot {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+}
+@keyframes scroll-line {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  50% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  50.1% {
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+.soft-out {
+  opacity: calc(1 - var(--d, 0) * 2);
+  filter: blur(calc(var(--d, 0) * 12px));
+  transform: translateY(calc(var(--d, 0) * -4vh));
+}

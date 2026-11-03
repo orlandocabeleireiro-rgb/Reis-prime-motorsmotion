@@ -1,0 +1,37 @@
+{
+  "name": "reis-prime-motors",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "intro:frames": "bash scripts/convert-intro.sh",
+    "intro:placeholder": "node scripts/generate-placeholder-intro.mjs .placeholder-intro && bash scripts/convert-intro.sh .placeholder-intro/intro-desktop.mp4 .placeholder-intro/intro-mobile.mp4",
+    "cars:placeholders": "node scripts/generate-car-placeholders.mjs",
+    "icons": "node scripts/build-brand-icons.mjs",
+    "typecheck": "next typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "framer-motion": "^14.9.0",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.27",
+    "next": "16.4.4",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "simple-icons": "^16.36.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.4",
+    "playwright-core": "^1.64.1",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
