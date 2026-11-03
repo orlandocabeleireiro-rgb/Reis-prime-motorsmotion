@@ -208,16 +208,11 @@ export function IntroSequence({ children, manifest }: { children: ReactNode; man
         reveal.style.setProperty("--h2y", `${hl[1].y}px`);
       }
 
-      // posição de cada letra do título, para o reflexo seguir o rato
+      // posição do logótipo, para o reflexo seguir o rato
       const h1 = titleRef.current?.querySelector("h1");
       if (h1) {
         const r = h1.getBoundingClientRect();
         titleBox = { left: r.left, width: Math.max(1, r.width) };
-        h1.querySelectorAll<HTMLElement>(".chrome-letter").forEach((el) => {
-          const lr = el.getBoundingClientRect();
-          el.style.setProperty("--lx", ((lr.left + lr.width / 2 - r.left) / r.width).toFixed(4));
-          el.style.setProperty("--lw", (lr.width / r.width).toFixed(4));
-        });
       }
     };
 

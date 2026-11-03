@@ -500,3 +500,28 @@ html.lenis body {
   border-radius: 50%;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.22), transparent 70%);
 }
+
+/* Logótipo da intro: reflexo prateado recortado pela forma do logótipo */
+.logo-sheen {
+  background-image: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.95) 50%, transparent 60%);
+  background-size: 300% 100%;
+  background-repeat: no-repeat;
+  background-position: 150% 0;
+  mix-blend-mode: screen;
+  animation: logo-sheen 6.5s var(--ease-premium) 1.4s infinite;
+}
+@keyframes logo-sheen {
+  0% {
+    background-position: 150% 0;
+  }
+  45%,
+  100% {
+    background-position: -50% 0;
+  }
+}
+/* com rato: o brilho fica onde está o cursor (--mx = posição no logótipo, 0–1) */
+[data-follow="true"] .logo-sheen {
+  animation: none;
+  background-position: calc((1.5 - var(--mx, 0.5)) / 0.02 * 1%) 0;
+  transition: background-position 0.2s linear;
+}
